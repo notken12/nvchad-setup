@@ -6,7 +6,7 @@ local default_plugins = {
 
   {
     "NvChad/base46",
-    branch = "v2.0",
+    branch = "v3.0",
     build = function()
       require("base46").load_all_highlights()
     end,
@@ -14,26 +14,16 @@ local default_plugins = {
 
   {
     "NvChad/ui",
-    branch = "v2.0",
+    branch = "v3.0",
     lazy = false,
-  },
-
-  {
-    "NvChad/nvterm",
-    init = function()
-      require("core.utils").load_mappings "nvterm"
-    end,
-    config = function(_, opts)
-      require "base46.term"
-      require("nvterm").setup(opts)
+    config = function()
+      require "nvchad"
     end,
   },
 
   {
     "NvChad/nvim-colorizer.lua",
-    init = function()
-      require("core.utils").lazy_load "nvim-colorizer.lua"
-    end,
+    event = "User FilePost",
     config = function(_, opts)
       require("colorizer").setup(opts)
 
@@ -57,25 +47,23 @@ local default_plugins = {
 
   {
     "lukas-reineke/indent-blankline.nvim",
-    version = "2.20.7",
-    init = function()
-      require("core.utils").lazy_load "indent-blankline.nvim"
-    end,
+    event = "User FilePost",
     opts = function()
       return require("plugins.configs.others").blankline
     end,
     config = function(_, opts)
       require("core.utils").load_mappings "blankline"
       dofile(vim.g.base46_cache .. "blankline")
-      require("indent_blankline").setup(opts)
+
+      local hooks = require "ibl.hooks"
+      hooks.register(hooks.type.WHITESPACE, hooks.builtin.hide_first_space_indent_level)
+      require("ibl").setup(opts)
     end,
   },
 
   {
     "nvim-treesitter/nvim-treesitter",
-    init = function()
-      require("core.utils").lazy_load "nvim-treesitter"
-    end,
+    event = { "BufReadPost", "BufNewFile" },
     cmd = { "TSInstall", "TSBufEnable", "TSBufDisable", "TSModuleInfo" },
     build = ":TSUpdate",
     opts = function()
@@ -83,6 +71,7 @@ local default_plugins = {
     end,
     config = function(_, opts)
       dofile(vim.g.base46_cache .. "syntax")
+      dofile(vim.g.base46_cache .. "treesitter")
       require("nvim-treesitter.configs").setup(opts)
     end,
   },
@@ -90,22 +79,7 @@ local default_plugins = {
   -- git stuff
   {
     "lewis6991/gitsigns.nvim",
-    ft = { "gitcommit", "diff" },
-    init = function()
-      -- load gitsigns only when a git file is opened
-      vim.api.nvim_create_autocmd({ "BufRead" }, {
-        group = vim.api.nvim_create_augroup("GitSignsLazyLoad", { clear = true }),
-        callback = function()
-          vim.fn.system("git -C " .. '"' .. vim.fn.expand "%:p:h" .. '"' .. " rev-parse")
-          if vim.v.shell_error == 0 then
-            vim.api.nvim_del_augroup_by_name "GitSignsLazyLoad"
-            vim.schedule(function()
-              require("lazy").load { plugins = { "gitsigns.nvim" } }
-            end)
-          end
-        end,
-      })
-    end,
+    event = "User FilePost",
     opts = function()
       return require("plugins.configs.others").gitsigns
     end,
@@ -128,7 +102,9 @@ local default_plugins = {
 
       -- custom nvchad cmd to install all mason binaries listed
       vim.api.nvim_create_user_command("MasonInstallAll", function()
-        vim.cmd("MasonInstall " .. table.concat(opts.ensure_installed, " "))
+        if opts.ensure_installed and #opts.ensure_installed > 0 then
+          vim.cmd("MasonInstall " .. table.concat(opts.ensure_installed, " "))
+        end
       end, {})
 
       vim.g.mason_binaries_list = opts.ensure_installed
@@ -137,11 +113,9 @@ local default_plugins = {
 
   {
     "neovim/nvim-lspconfig",
-    init = function()
-      require("core.utils").lazy_load "nvim-lspconfig"
-    end,
+    event = "User FilePost",
     config = function()
-      require "plugins.configs.lspconfig"
+      require("plugins.configs.lspconfig").defaults()
     end,
   },
 
@@ -229,7 +203,7 @@ local default_plugins = {
 
   {
     "nvim-telescope/telescope.nvim",
-    dependencies = { "nvim-treesitter/nvim-treesitter", { "nvim-telescope/telescope-fzf-native.nvim", build = "make" } },
+    dependencies = { "nvim-treesitter/nvim-treesitter" },
     cmd = "Telescope",
     init = function()
       require("core.utils").load_mappings "telescope"
@@ -264,7 +238,7 @@ local default_plugins = {
   },
 }
 
-local config = require("core.utils").load_config()
+local config = require "nvconfig"
 
 if #config.plugins > 0 then
   table.insert(default_plugins, { import = config.plugins })

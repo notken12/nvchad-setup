@@ -1,12 +1,9 @@
 local opt = vim.opt
 local g = vim.g
-local config = require("core.utils").load_config()
 
 -------------------------------------- globals -----------------------------------------
-g.nvchad_theme = config.ui.theme
 g.base46_cache = vim.fn.stdpath "data" .. "/nvchad/base46/"
 g.toggle_theme_icon = "   "
-g.transparency = config.ui.transparency
 
 -------------------------------------- options ------------------------------------------
 opt.laststatus = 3 -- global statusline
@@ -14,6 +11,7 @@ opt.showmode = false
 
 opt.clipboard = "unnamedplus"
 opt.cursorline = true
+opt.cursorlineopt = "number"
 
 -- Indenting
 opt.expandtab = true
@@ -83,18 +81,17 @@ autocmd("BufWritePost", {
     local app_name = vim.env.NVIM_APPNAME and vim.env.NVIM_APPNAME or "nvim"
     local module = string.gsub(fp, "^.*/" .. app_name .. "/lua/", ""):gsub("/", ".")
 
+    require("plenary.reload").reload_module "nvconfig"
     require("plenary.reload").reload_module "base46"
     require("plenary.reload").reload_module(module)
-    require("plenary.reload").reload_module "custom.chadrc"
 
-    config = require("core.utils").load_config()
-
-    vim.g.nvchad_theme = config.ui.theme
-    vim.g.transparency = config.ui.transparency
+    local config = require "nvconfig"
 
     -- statusline
-    require("plenary.reload").reload_module("nvchad.statusline." .. config.ui.statusline.theme)
-    vim.opt.statusline = "%!v:lua.require('nvchad.statusline." .. config.ui.statusline.theme .. "').run()"
+    if config.ui.statusline.theme ~= "custom" then
+      require("plenary.reload").reload_module("nvchad.statusline." .. config.ui.statusline.theme)
+      vim.opt.statusline = "%!v:lua.require('nvchad.statusline." .. config.ui.statusline.theme .. "').run()"
+    end
 
     -- tabufline
     if config.ui.tabufline.enabled then
@@ -104,6 +101,32 @@ autocmd("BufWritePost", {
 
     require("base46").load_all_highlights()
     -- vim.cmd("redraw!")
+  end,
+})
+
+-- user event that loads after UIEnter + only if file buf is there
+vim.api.nvim_create_autocmd({ "UIEnter", "BufReadPost", "BufNewFile" }, {
+  group = vim.api.nvim_create_augroup("NvFilePost", { clear = true }),
+  callback = function(args)
+    local file = vim.api.nvim_buf_get_name(args.buf)
+    local buftype = vim.api.nvim_buf_get_option(args.buf, "buftype")
+
+    if not vim.g.ui_entered and args.event == "UIEnter" then
+      vim.g.ui_entered = true
+    end
+
+    if file ~= "" and buftype ~= "nofile" and vim.g.ui_entered then
+      vim.api.nvim_exec_autocmds("User", { pattern = "FilePost", modeline = false })
+      vim.api.nvim_del_augroup_by_name "NvFilePost"
+
+      vim.schedule(function()
+        vim.api.nvim_exec_autocmds("FileType", {})
+
+        if vim.g.editorconfig then
+          require("editorconfig").config(args.buf)
+        end
+      end, 0)
+    end
   end,
 })
 

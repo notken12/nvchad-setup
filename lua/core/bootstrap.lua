@@ -18,7 +18,7 @@ M.lazy = function(install_path)
   M.echo "  Compiling base46 theme to bytecode ..."
 
   local base46_repo = "https://github.com/NvChad/base46"
-  shell_call { "git", "clone", "--depth", "1", "-b", "v2.0", base46_repo, lazy_path }
+  shell_call { "git", "clone", "--depth", "1", "-b", "v3.0", base46_repo, lazy_path }
   vim.opt.rtp:prepend(lazy_path)
 
   require("base46").compile()
@@ -40,7 +40,7 @@ M.gen_chadrc_template = function()
   local path = fn.stdpath "config" .. "/lua/custom"
 
   if fn.isdirectory(path) ~= 1 then
-    local input = fn.input "Do you want to install example custom config? (y/N): "
+    local input = vim.env.NVCHAD_EXAMPLE_CONFIG or fn.input "Do you want to install example custom config? (y/N): "
 
     if input:lower() == "y" then
       M.echo "Cloning example custom config repo..."
