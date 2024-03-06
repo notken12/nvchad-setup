@@ -6,6 +6,7 @@ g.base46_cache = vim.fn.stdpath "data" .. "/nvchad/base46/"
 g.toggle_theme_icon = "   "
 
 -------------------------------------- options ------------------------------------------
+opt.guifont = "MonaspiceNe Nerd Font Mono:h14"
 opt.laststatus = 3 -- global statusline
 opt.showmode = false
 
