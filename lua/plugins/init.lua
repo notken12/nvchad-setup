@@ -116,6 +116,10 @@ local default_plugins = {
   },
 
   {
+    "mfussenegger/nvim-jdtls"
+  },
+
+  {
     "neovim/nvim-lspconfig",
     event = "User FilePost",
     config = function()

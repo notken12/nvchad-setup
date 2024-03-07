@@ -82,7 +82,7 @@ local server_opts = {
         },
       },
     },
-  }
+  },
 }
 
 local dont_setup = {
@@ -103,7 +103,7 @@ M.defaults = function()
 
       if server == "rust_analyzer" then
         -- Initialize the LSP via rust-tools instead
-        require("user.rusttools").setup()
+        -- require("user.rusttools").setup()
         -- Only if standalone support is needed
       end
 
