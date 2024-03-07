@@ -112,6 +112,10 @@ local default_plugins = {
   },
 
   {
+    "williamboman/mason-lspconfig.nvim"
+  },
+
+  {
     "neovim/nvim-lspconfig",
     event = "User FilePost",
     config = function()

@@ -7,6 +7,7 @@ g.toggle_theme_icon = "   "
 
 -------------------------------------- options ------------------------------------------
 opt.guifont = "MonaspiceXe Nerd Font Mono:h16"
+opt.cmdheight = 0
 opt.laststatus = 3 -- global statusline
 opt.showmode = false
 
