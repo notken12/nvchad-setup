@@ -1,3 +1,8 @@
+print(vim.loop.cwd())
+if vim.loop.cwd() == nil or vim.loop.cwd() == '/' or vim.loop.cwd() == '' then
+  vim.api.nvim_set_current_dir(vim.fn.expand('$HOME'))
+end
+
 require "core"
 
 pcall(require, 'custom')
