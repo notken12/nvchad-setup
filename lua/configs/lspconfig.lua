@@ -38,3 +38,5 @@ for _i, server in ipairs(servers) do
     lspconfig[server].setup(merged_opts)
   end
 end
+
+return {on_attach = on_attach, capabilities = capabilities}

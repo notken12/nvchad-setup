@@ -76,7 +76,7 @@ local function setup()
     -- jdtls.dap.setup_dap_main_class_configs()
 
     -- you may want to also run your generic on_attach() function used by your LSP config
-    require("plugins.configs.lspconfig").on_attach(client, bufnr)
+    require("configs.lspconfig").on_attach(client, bufnr)
   end
 
   opts.on_attach = on_attach
