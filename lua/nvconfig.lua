@@ -1,9 +1,5 @@
 local M = {}
 
-M.options = {
-  nvchad_branch = "v3.0",
-}
-
 M.ui = {
   ------------------------------- base46 -------------------------------------
   -- hl = highlights
@@ -14,7 +10,6 @@ M.ui = {
   theme = "onedark", -- default theme
   transparency = false,
 
-  -- cmp themeing
   cmp = {
     icons = true,
     lspkind_text = true,
@@ -26,13 +21,11 @@ M.ui = {
   ------------------------------- nvchad_ui modules -----------------------------
   statusline = {
     theme = "default", -- default/vscode/vscode_colored/minimal
-
     -- default/round/block/arrow separators work only for default statusline theme
     -- round and block will work for minimal theme only
     separator_style = "default",
-
     order = nil,
-    modules = {},
+    modules = nil,
   },
 
   -- lazyload it when there are 1+ buffers
@@ -40,10 +33,9 @@ M.ui = {
     enabled = true,
     lazyload = true,
     order = { "treeOffset", "buffers", "tabs", "btns" },
-    modules = {},
+    modules = nil,
   },
 
-  -- nvdash (dashboard)
   nvdash = {
     load_on_startup = false,
 
@@ -77,7 +69,7 @@ M.ui = {
   },
 
   term = {
-    hl = "Normal:term,WinSeparator:WinSeparator",
+    -- hl = "Normal:term,WinSeparator:WinSeparator",
     sizes = { sp = 0.3, vsp = 0.2 },
     float = {
       relative = "editor",
@@ -87,15 +79,8 @@ M.ui = {
       height = 0.4,
       border = "single",
     },
-    behavior = {
-      auto_insert = true,
-    },
   },
 }
-
-M.plugins = "" -- path i.e "custom.plugins", so make custom/plugins.lua file
-
-M.lazy_nvim = require "plugins.configs.lazy_nvim" -- config for lazy.nvim startup options
 
 M.base46 = {
   integrations = {
@@ -106,7 +91,6 @@ M.base46 = {
     "git",
     "lsp",
     "mason",
-    "nvchad_updater",
     "nvcheatsheet",
     "nvdash",
     "nvimtree",
@@ -119,10 +103,4 @@ M.base46 = {
   },
 }
 
-local chadrc_exists, chadrc = pcall(require, "custom.chadrc")
-
-if chadrc_exists then
-  M = vim.tbl_deep_extend("force", M, chadrc)
-end
-
-return M
+return vim.tbl_deep_extend("force", M, require "chadrc")
