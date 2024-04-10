@@ -47,7 +47,7 @@ local opts = {
 }
 
 local function setup()
-  local pkg_status, jdtls = pcall(require,"jdtls")
+  local pkg_status, jdtls = pcall(require, "jdtls")
   if not pkg_status then
     vim.notify("unable to load nvim-jdtls", "error")
     return {}
@@ -55,6 +55,10 @@ local function setup()
 
   -- local jdtls_path = vim.fn.stdpath("data") .. "/mason/packages/jdtls"
   local jdtls_bin = vim.fn.stdpath("data") .. "/mason/bin/jdtls"
+  local is_windows = package.config:sub(1, 1) == '\\'
+  if is_windows then
+    jdtls_bin = jdtls_bin .. '.cmd'
+  end
 
   local root_markers = { ".gradle", "gradlew", ".git" }
   local root_dir = jdtls.setup.find_root(root_markers)
