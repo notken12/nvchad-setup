@@ -9,11 +9,40 @@ return {
 
   {
     "neovim/nvim-lspconfig",
-    "williamboman/mason-lspconfig.nvim",
-    requires = { "williamboman/mason-lspconfig.nvim" },
+    dependencies = {
+      "williamboman/mason.nvim",
+      "williamboman/mason-lspconfig.nvim",
+    },
+    event = "VeryLazy",
     config = function()
       -- require("nvchad.configs.lspconfig").defaults()
       require "configs.lspconfig"
+    end,
+  },
+
+  {
+    "mrcjkb/rustaceanvim",
+    version = "^4", -- Recommended
+    lazy = false, -- This plugin is already lazy
+    -- no setup function needed, works out of the box
+    config = function()
+      vim.lsp.inlay_hint.enable()
+    end,
+  },
+
+  {
+    "mfussenegger/nvim-dap",
+    event = "VeryLazy",
+    dependencies = {
+      "williamboman/mason.nvim",
+      "jay-babu/mason-nvim-dap.nvim",
+      "rcarriga/nvim-dap-ui",
+      "nvim-neotest/nvim-nio",
+    },
+    config = function()
+      require("mason").setup()
+      require("mason-nvim-dap").setup()
+      require("dapui").setup()
     end,
   },
 
