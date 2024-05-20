@@ -55,6 +55,8 @@ local function setup()
 
   -- local jdtls_path = vim.fn.stdpath("data") .. "/mason/packages/jdtls"
   local jdtls_bin = vim.fn.stdpath "data" .. "/mason/bin/jdtls"
+  local javadbg_bin = vim.fn.stdpath "data" ..
+      "/mason/share/java-debug-adapter/com.microsoft.java.debug.plugin-0.50.0.jar"
   local is_windows = package.config:sub(1, 1) == "\\"
   if is_windows then
     jdtls_bin = jdtls_bin .. ".cmd"
@@ -71,6 +73,10 @@ local function setup()
     "-data",
     workspace_dir,
   }
+  opts.init_options = {
+    bundles = { javadbg_bin }
+  }
+  -- print(javadbg_bin)
   -- print(vim.inspect(opts.cmd))
 
   local on_attach = function(client, bufnr)
@@ -83,7 +89,14 @@ local function setup()
     require("configs.lspconfig").on_attach(client, bufnr)
   end
 
-  opts.on_attach = on_attach
+  opts.on_attach = function(client, bufnr)
+    on_attach(client, bufnr)
+    vim.lsp.inlay_hint.enable()
+    require 'jdtls.setup'.add_commands()
+    require 'jdtls'.setup_dap({ hotcodereplace = 'auto' })
+    require 'jdtls.dap'.setup_dap_main_class_configs()
+    -- require 'dap'.adapters.java = require 'dap'.adapters.java()
+  end
   opts.capabilities = vim.lsp.protocol.make_client_capabilities()
 
   return opts

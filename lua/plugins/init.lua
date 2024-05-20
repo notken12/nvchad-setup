@@ -23,7 +23,7 @@ return {
   {
     "mrcjkb/rustaceanvim",
     version = "^4", -- Recommended
-    lazy = false, -- This plugin is already lazy
+    lazy = false,   -- This plugin is already lazy
     -- no setup function needed, works out of the box
     config = function()
       vim.lsp.inlay_hint.enable()
@@ -43,6 +43,7 @@ return {
       require("mason").setup()
       require("mason-nvim-dap").setup()
       require("dapui").setup()
+      require('dap.ext.vscode').load_launchjs()
     end,
   },
 
