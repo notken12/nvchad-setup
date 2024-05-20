@@ -54,15 +54,15 @@ local function setup()
   end
 
   -- local jdtls_path = vim.fn.stdpath("data") .. "/mason/packages/jdtls"
-  local jdtls_bin = vim.fn.stdpath("data") .. "/mason/bin/jdtls"
-  local is_windows = package.config:sub(1, 1) == '\\'
+  local jdtls_bin = vim.fn.stdpath "data" .. "/mason/bin/jdtls"
+  local is_windows = package.config:sub(1, 1) == "\\"
   if is_windows then
-    jdtls_bin = jdtls_bin .. '.cmd'
+    jdtls_bin = jdtls_bin .. ".cmd"
   end
 
   local root_markers = { ".gradle", "gradlew", ".git" }
   local root_dir = jdtls.setup.find_root(root_markers)
-  local home = os.getenv("HOME")
+  local home = os.getenv "HOME"
   local project_name = vim.fn.fnamemodify(root_dir, ":p:h:t")
   local workspace_dir = home .. "/.cache/jdtls/workspace/" .. project_name
 
@@ -71,7 +71,7 @@ local function setup()
     "-data",
     workspace_dir,
   }
-
+  -- print(vim.inspect(opts.cmd))
 
   local on_attach = function(client, bufnr)
     jdtls.setup.add_commands() -- important to ensure you can update configs when build is updated
