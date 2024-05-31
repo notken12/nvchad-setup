@@ -26,7 +26,29 @@ return {
     lazy = false,   -- This plugin is already lazy
     -- no setup function needed, works out of the box
     config = function()
-      vim.lsp.inlay_hint.enable()
+      local on_attach = require("nvchad.configs.lspconfig").on_attach
+      local on_init = require("nvchad.configs.lspconfig").on_init
+      local capabilities = require("nvchad.configs.lspconfig").capabilities
+      vim.g.rustaceanvim = {
+        -- Plugin configuration
+        tools = {
+        },
+        -- LSP configuration
+        server = {
+          on_attach = function(client, bufnr)
+            -- you can also put keymaps in here
+            on_attach(client, bufnr)
+          end,
+          default_settings = {
+            -- rust-analyzer language server configuration
+            ['rust-analyzer'] = {
+            },
+          },
+        },
+        -- DAP configuration
+        dap = {
+        },
+      }
     end,
   },
 

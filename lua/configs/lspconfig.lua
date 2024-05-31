@@ -40,6 +40,5 @@ for _i, server in ipairs(servers) do
   end
 end
 
-vim.lsp.inlay_hint.enable()
 
 return { on_attach = on_attach, capabilities = capabilities }

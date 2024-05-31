@@ -7,4 +7,3 @@ end
 require('dap')
 jdtls.start_or_attach(jdtls_config)
 -- print(vim.inspect(jdtls_config.init_options))
-vim.lsp.inlay_hint.enable()
