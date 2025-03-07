@@ -10,7 +10,7 @@ return {
   },
   {
     "stevearc/conform.nvim",
-    -- event = 'BufWritePre', -- uncomment for format on save
+    event = 'BufWritePre', -- uncomment for format on save
     opts = require "configs.conform",
   },
 
@@ -24,6 +24,26 @@ return {
 
   {
     "williamboman/mason-lspconfig.nvim",
+  },
+  {
+    'JoosepAlviste/nvim-ts-context-commentstring',
+  },
+
+  -- {
+  --   'echasnovski/mini.comment',
+  --   version = '*',
+  --   config = function()
+  --     require('mini.comment').setup()
+  --   end
+  -- },
+  {
+    'numToStr/Comment.nvim',
+    opts = {
+      -- add any options here
+    },
+    config = function()
+      require('Comment').setup()
+    end
   }
 
   -- {

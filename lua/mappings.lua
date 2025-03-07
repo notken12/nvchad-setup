@@ -15,4 +15,11 @@ vim.api.nvim_create_autocmd("BufWritePre", {
   end,
 })
 
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "svelte",
+  callback = function()
+    vim.bo.commentstring = "<!-- %s -->"
+  end
+})
+
 -- map({ "n", "i", "v" }, "<C-s>", "<cmd> w <cr>")
